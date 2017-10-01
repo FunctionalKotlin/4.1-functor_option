@@ -1,8 +1,9 @@
 // Copyright © FunctionalKotlin.com 2017. All rights reserved.
 
-sealed class Option<A>
+sealed class Option<out A>
 
 object None : Option<Nothing>()
 
-data class Just<A>(val value: A) : Option<A>()
+data class Just<out A>(val value: A) : Option<A>()
 
+class TextField(val text: Option<String> = None)
