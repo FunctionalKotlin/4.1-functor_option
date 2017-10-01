@@ -9,6 +9,11 @@ object None : Option<Nothing>()
 
 data class Just<out A>(val value: A) : Option<A>()
 
+fun <A, B> Option<A>.map(transform: (A) -> B): Option<B> = when(this) {
+    is None -> None
+    is Just -> Just(transform(value))
+}
+
 val json = """{
     "name": "Alex",
     "accountType": "Premium",
@@ -41,9 +46,8 @@ fun asJsonObject(json: String): JsonObject =
     StringBuilder(json).let { Parser().parse(it) } as JsonObject
 
 fun main(args: Array<String>) {
-    val account = Account.fromJson(json)
-
-    if (account is Just) {
-        println(account.value.name)
-    }
+    Account
+        .fromJson(json)
+        .map(Account::name)
+        .also(::println)
 }
