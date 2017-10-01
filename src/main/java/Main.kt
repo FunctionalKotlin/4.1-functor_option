@@ -23,15 +23,27 @@ data class Account(
     val url: String) {
 
     companion object {
-        fun fromJson(json: String): Account = asJsonObject(json).let {
-            Account(
-                it["name"] as String,
-                it["accountType"] as String,
-                it["email"] as String,
-                it["url"] as String)
+        fun fromJson(json: String): Option<Account> = asJsonObject(json).let {
+            val name = it["name"] as? String
+            val accountType = it["accountType"] as? String
+            val email = it["email"] as? String
+            val url = it["url"] as? String
+
+            if (name != null && accountType != null && email != null && url != null)
+                Just(Account(name, accountType, email, url))
+            else
+                None
         }
     }
 }
 
 fun asJsonObject(json: String): JsonObject =
     StringBuilder(json).let { Parser().parse(it) } as JsonObject
+
+fun main(args: Array<String>) {
+    val account = Account.fromJson(json)
+
+    if (account is Just) {
+        println(account.value.name)
+    }
+}
